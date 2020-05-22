@@ -1,0 +1,27 @@
+<div class="row w-100 m-0" style="height: 20vh;">
+  <div class="col-auto">
+    <button class="btn btn-light mt-4" (click)="playSpatioTemporal()">Play</button>
+  </div>
+  <div class="col mt-3">
+    <div class="row w-100 m-0 p-2" style="background-color: rgb(85, 85, 85); border-radius: 12px;">
+      <div class="col-12 text-center text-white font12 font-weight-bold">
+        Value: {{ value | date: 'dd/MM/yyyy hh:mm:ss' }}
+      </div>
+      <ng5-slider [(value)]="value" [options]="opt"></ng5-slider>
+      <div class="col-6 pl-0 text-white font12">
+        {{ opt.floor | date: 'dd/MM/yyyy hh:mm:ss' }}
+      </div>
+      <div class="col-6 text-right pr-0 text-white font12">
+        {{ opt.ceil | date: 'dd/MM/yyyy hh:mm:ss' }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  style="height: 80vh;"
+  leaflet
+  [leafletOptions]="options"
+  [leafletLayers]="layers"
+  (leafletMapReady)="onMapReady($event)"
+></div>
