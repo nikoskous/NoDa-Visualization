@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
 import { QuoteService } from './quote.service';
+import { themeFromMapBox } from '../shell/shell.service';
 import * as L from 'leaflet';
 import { Options } from 'ng5-slider';
 
@@ -75,12 +76,7 @@ export class HomeComponent implements OnInit {
   map: L.Map;
   layers: Array<any> = [];
   options = {
-    layers: [
-      L.tileLayer(
-        'https://api.mapbox.com/styles/v1/nikoskous/ckaid0c1y0sw21ipamlvgkzqt/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoibmlrb3Nrb3VzIiwiYSI6ImNrMnRjajM5NDBxZXczbXA1YmxueGdhcmMifQ.O0Fz93cltHQ10OfqGBS7FQ',
-        { maxZoom: 18, attribution: '...' }
-      ),
-    ],
+    layers: [L.tileLayer(themeFromMapBox, { maxZoom: 18, attribution: '...' })],
     zoom: 4,
     center: L.latLng(-27.750998, 127.581219),
   };
