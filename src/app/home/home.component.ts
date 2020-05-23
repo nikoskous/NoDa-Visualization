@@ -103,6 +103,10 @@ export class HomeComponent implements OnInit {
   playSpatioTemporal() {
     this.value = this.opt.floor;
     let i = 0;
+    let myIcon = L.divIcon({
+      html:
+        '<div style="background-color: red; color: rgba(255, 0, 0, 0); height: 10px; width: 10px; border-radius: 100%;">sdfsf</div>',
+    });
     this.data.forEach((el) => {
       i++;
       setTimeout(() => {
@@ -116,6 +120,7 @@ export class HomeComponent implements OnInit {
         this.map.panTo(new L.LatLng(lat, lon));
         this.layers.push(
           L.marker([lat, lon], {
+            icon: myIcon,
             // icon: this.greenIcon
           })
           // .bindPopup(

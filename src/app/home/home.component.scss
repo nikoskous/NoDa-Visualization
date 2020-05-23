@@ -12,3 +12,10 @@ q {
   width: 100%;
   height: 100%;
 }
+
+.my-div-icon {
+  background-color: red !important;
+  color: red($color: #ff0505) !important;
+  height: 2rem;
+  width: 2rem;
+}
