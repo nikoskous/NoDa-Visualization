@@ -9,9 +9,20 @@ import { HomeComponent } from './home.component';
 import { QuoteService } from './quote.service';
 import { Ng5SliderModule } from 'ng5-slider';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [CommonModule, TranslateModule, LeafletModule, Ng5SliderModule, CoreModule, SharedModule, HomeRoutingModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    LeafletModule,
+    FormsModule,
+    ReactiveFormsModule,
+    Ng5SliderModule,
+    CoreModule,
+    SharedModule,
+    HomeRoutingModule,
+  ],
   declarations: [HomeComponent],
 })
 export class HomeModule {}

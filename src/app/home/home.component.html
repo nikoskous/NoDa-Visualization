@@ -1,18 +1,59 @@
 <div class="row w-100 m-0" style="height: 20vh;">
-  <div class="col-auto">
-    <button class="btn btn-light mt-4" (click)="playSpatioTemporal()">Play</button>
-  </div>
-  <div class="col mt-3">
+  <!-- <div class="col-auto">
+    <div class="row w-100 m-0">
+      <button class="btn btn-light mt-4" (click)="playSpatioTemporal()">Play</button>
+    </div>
+    <div class="row w-100 m-0">
+      <button class="btn btn-light mt-4">Pause</button>
+    </div>
+  </div> -->
+  <div class="col-12 mt-3">
     <div class="row w-100 m-0 p-2" style="background-color: rgb(85, 85, 85); border-radius: 12px;">
-      <div class="col-12 text-center text-white font12 font-weight-bold">
-        Value: {{ value | date: 'dd/MM/yyyy hh:mm:ss' }}
+      <div class="col-auto">
+        <div
+          class="btn btn-light font12 mr-2 p-0 pl-2 pr-2"
+          style="padding-top: 2px; padding-bottom: 2px;"
+          (click)="playSpatioTemporal()"
+        >
+          <i class="fa fa-play"></i>
+        </div>
+        <div class="btn btn-light font12 mr-2 p-0 pl-2 pr-2" style="padding-top: 2px; padding-bottom: 2px;">
+          <i class="fa fa-pause"></i>
+        </div>
+      </div>
+      <div class="col-auto text-center text-white font14">
+        <span class="font-weight-bold mr-3">Period Displayed :</span>
+        <div class="btn btn-light font12 mr-2 p-0 pl-2 pr-2" style="padding-top: 2px; padding-bottom: 2px;">
+          <i class="fa fa-backward"></i>
+        </div>
+        {{ value | date: 'dd/MM/yyyy hh:mm:ss' }} - {{ value | date: 'dd/MM/yyyy hh:mm:ss' }}
+        <div class="btn btn-light font12 ml-2 p-0 pl-2 pr-2" style="padding-top: 2px; padding-bottom: 2px;">
+          <i class="fa fa-forward"></i>
+        </div>
       </div>
       <ng5-slider [(value)]="value" [options]="opt"></ng5-slider>
       <div class="col-6 pl-0 text-white font12">
+        <input
+          type="datetime-local"
+          class="inputOfDates"
+          [(ngModel)]="opt.floor"
+          [ngModelOptions]="{ standalone: true }"
+        />
         {{ opt.floor | date: 'dd/MM/yyyy hh:mm:ss' }}
       </div>
       <div class="col-6 text-right pr-0 text-white font12">
+        <input
+          type="datetime-local"
+          class="inputOfDates"
+          [(ngModel)]="opt.ceil"
+          [ngModelOptions]="{ standalone: true }"
+        />
         {{ opt.ceil | date: 'dd/MM/yyyy hh:mm:ss' }}
+      </div>
+      <!-- <div class="col-auto pl-0 text-white font12 mt-2">Window : <input type="number" class="inputs" ></div> -->
+      <div class="col-auto text-white font12 mt-2">
+        Step (s) :
+        <input type="number" class="inputs" [(ngModel)]="refreshTime" [ngModelOptions]="{ standalone: true }" />
       </div>
     </div>
   </div>

@@ -67,6 +67,8 @@ export class HomeComponent implements OnInit {
     },
   ];
 
+  refreshTime: number;
+
   value: number = 100;
   opt: Options = {
     floor: 0,
@@ -84,6 +86,7 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.refreshTime = 0.5;
     const length = this.data.length;
     console.log(length);
     this.opt.floor = new Date(this.data[0]['time']).getTime();
@@ -91,9 +94,9 @@ export class HomeComponent implements OnInit {
 
     this.opt.ticksArray = [];
 
-    this.data.forEach((position) => {
-      this.opt.ticksArray.push(new Date(position.time).getTime());
-    });
+    // this.data.forEach((position) => {
+    // this.opt.ticksArray.push(new Date(position.time).getTime());
+    // });
   }
 
   onMapReady(map: L.Map) {
@@ -108,35 +111,37 @@ export class HomeComponent implements OnInit {
         '<div style="background-color: red; color: rgba(255, 0, 0, 0); height: 10px; width: 10px; border-radius: 100%;">sdfsf</div>',
     });
     this.data.forEach((el) => {
-      i++;
-      setTimeout(() => {
-        const lat = el.lat;
-        const lon = el.lon;
-        const time = el.time;
+      if (new Date(el.time) > new Date(this.opt.floor)) {
+        i++;
+        setTimeout(() => {
+          const lat = el.lat;
+          const lon = el.lon;
+          const time = el.time;
 
-        // console.log(this.latlngsPolyline);
-        this.layers = [];
-        this.map.setZoom(7);
-        this.map.panTo(new L.LatLng(lat, lon));
-        this.layers.push(
-          L.marker([lat, lon], {
-            icon: myIcon,
-            // icon: this.greenIcon
-          })
-          // .bindPopup(
-          //   `<div>CraftID: ` +
-          //     craftID +
-          //     `</div>` +
-          //     `<div>TimeStamp: ` +
-          //     TimeStamp +
-          //     `</div>` +
-          //     `<div>Speed: ` +
-          //     Speed +
-          //     `</div>`
-          // )
-        );
-        this.value = new Date(time).getTime();
-      }, i * 500);
+          // console.log(this.latlngsPolyline);
+          this.layers = [];
+          // this.map.setZoom(7);
+          this.map.panTo(new L.LatLng(lat, lon));
+          this.layers.push(
+            L.marker([lat, lon], {
+              icon: myIcon,
+              // icon: this.greenIcon
+            })
+            // .bindPopup(
+            //   `<div>CraftID: ` +
+            //     craftID +
+            //     `</div>` +
+            //     `<div>TimeStamp: ` +
+            //     TimeStamp +
+            //     `</div>` +
+            //     `<div>Speed: ` +
+            //     Speed +
+            //     `</div>`
+            // )
+          );
+          this.value = new Date(time).getTime();
+        }, i * (this.refreshTime * 1000));
+      }
     });
   }
 }
