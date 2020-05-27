@@ -18,10 +18,7 @@ export interface RandomQuoteContext {
 export class QuoteService {
   constructor(private httpClient: HttpClient) {}
 
-  getRandomQuote(context: RandomQuoteContext): Observable<string> {
-    return this.httpClient.get(routes.quote(context)).pipe(
-      map((body: any) => body.value),
-      catchError(() => of('Error, could not load joke :-('))
-    );
+  temporalRange(from: string, to: string) {
+    return this.httpClient.get('/movingobject/' + from + '/' + to).toPromise();
   }
 }
