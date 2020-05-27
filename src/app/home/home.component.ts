@@ -16,65 +16,69 @@ import 'leaflet/dist/images/marker-shadow.png';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  data = [
-    {
-      id: 1,
-      lat: -27.3641383333,
-      lon: 153.176081667,
-      time: '2019-09-07T00:07:54Z',
-    },
-    {
-      id: 2,
-      lat: -27.336745,
-      lon: 153.190841667,
-      time: '2019-09-07T01:09:52Z',
-    },
-    {
-      id: 3,
-      lat: -27.336745,
-      lon: 153.190841667,
-      time: '2019-09-07T01:09:52Z',
-    },
-    {
-      id: 4,
-      lat: -27.148075,
-      lon: 153.350708333,
-      time: '2019-09-07T02:09:58Z',
-    },
-    {
-      id: 5,
-      lat: -26.915405,
-      lon: 153.19185,
-      time: '2019-09-07T03:09:58Z',
-    },
-    {
-      id: 6,
-      lat: -26.7047333333,
-      lon: 153.182855,
-      time: '2019-09-07T04:09:59Z',
-    },
-    {
-      id: 7,
-      lat: -26.4476166667,
-      lon: 153.338056667,
-      time: '2019-09-07T05:14:57Z',
-    },
-    {
-      id: 8,
-      lat: -26.1195666667,
-      lon: 153.46412,
-      time: '2019-09-07T06:19:57Z',
-    },
-  ];
+  // data = [
+  //   {
+  //     id: 1,
+  //     lat: -27.3641383333,
+  //     lon: 153.176081667,
+  //     time: '2019-09-07T00:07:54Z',
+  //   },
+  //   {
+  //     id: 2,
+  //     lat: -27.336745,
+  //     lon: 153.190841667,
+  //     time: '2019-09-07T01:09:52Z',
+  //   },
+  //   {
+  //     id: 3,
+  //     lat: -27.336745,
+  //     lon: 153.190841667,
+  //     time: '2019-09-07T01:09:52Z',
+  //   },
+  //   {
+  //     id: 4,
+  //     lat: -27.148075,
+  //     lon: 153.350708333,
+  //     time: '2019-09-07T02:09:58Z',
+  //   },
+  //   {
+  //     id: 5,
+  //     lat: -26.915405,
+  //     lon: 153.19185,
+  //     time: '2019-09-07T03:09:58Z',
+  //   },
+  //   {
+  //     id: 6,
+  //     lat: -26.7047333333,
+  //     lon: 153.182855,
+  //     time: '2019-09-07T04:09:59Z',
+  //   },
+  //   {
+  //     id: 7,
+  //     lat: -26.4476166667,
+  //     lon: 153.338056667,
+  //     time: '2019-09-07T05:14:57Z',
+  //   },
+  //   {
+  //     id: 8,
+  //     lat: -26.1195666667,
+  //     lon: 153.46412,
+  //     time: '2019-09-07T06:19:57Z',
+  //   },
+  // ];
 
+  data: Array<any> = [];
+
+  changeFloor: boolean;
+  changeCeil: boolean;
   refreshTime: number;
+  windowBetweenFloorAndCeil: number;
+  dataRefreshTime: number;
 
-  value: number = 100;
-  opt: Options = {
-    floor: 0,
-    ceil: 10,
-    ticksArray: [0, 10, 25, 50, 100],
-  };
+  value: number;
+  maxValue: number;
+
+  opt: Options = {};
   map: L.Map;
   layers: Array<any> = [];
   options = {
@@ -83,20 +87,61 @@ export class HomeComponent implements OnInit {
     center: L.latLng(-27.750998, 127.581219),
   };
 
-  constructor() {}
+  constructor(private quoteService: QuoteService) {}
 
   ngOnInit() {
+    this.quoteService.temporalRange('2019-09-07T00:07:54Z', '2019-09-07T06:19:57Z').then((res: any) => {
+      this.opt = {
+        floor: new Date('2019-09-07T00:07:54Z').getTime(),
+        ceil: new Date('2019-09-07T06:19:57Z').getTime(),
+      };
+
+      console.log('ayto einai to res', res['results']['records']);
+      this.data = res['results']['records'];
+
+      const length = this.data.length;
+      console.log(length);
+      this.opt.floor = new Date(
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['year']['low'],
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['month']['low'] - 1,
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['day']['low'],
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['hour']['low'],
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['minute']['low'],
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['second']['low'],
+        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['nanosecond']['low']
+      ).getTime();
+      this.opt.ceil = new Date(
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['year']['low'],
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['month']['low'] - 1,
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['day']['low'],
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['hour']['low'],
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['minute']['low'],
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['second']['low'],
+        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['nanosecond']['low']
+      ).getTime();
+      this.value = this.opt.floor;
+      this.maxValue = this.value + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
+    });
+
     this.refreshTime = 0.5;
-    const length = this.data.length;
-    console.log(length);
-    this.opt.floor = new Date(this.data[0]['time']).getTime();
-    this.opt.ceil = new Date(this.data[length - 1]['time']).getTime();
+    this.dataRefreshTime = 10;
+    this.windowBetweenFloorAndCeil = 4;
+    this.changeFloor = false;
+    this.changeCeil = false;
 
-    this.opt.ticksArray = [];
-
+    // this.opt.ticksArray = [];
     // this.data.forEach((position) => {
     // this.opt.ticksArray.push(new Date(position.time).getTime());
     // });
+  }
+
+  changeFloorOrCeil(type: string) {
+    if (type === 'floor') {
+      this.changeFloor = !this.changeFloor;
+    }
+    if (type === 'ceil') {
+      this.changeCeil = !this.changeCeil;
+    }
   }
 
   onMapReady(map: L.Map) {
@@ -105,6 +150,7 @@ export class HomeComponent implements OnInit {
 
   playSpatioTemporal() {
     this.value = this.opt.floor;
+    this.maxValue = this.opt.floor + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
     let i = 0;
     let myIcon = L.divIcon({
       html:
@@ -140,6 +186,7 @@ export class HomeComponent implements OnInit {
             // )
           );
           this.value = new Date(time).getTime();
+          this.maxValue = this.value + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
         }, i * (this.refreshTime * 1000));
       }
     });
