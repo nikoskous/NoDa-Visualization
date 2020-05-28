@@ -5,6 +5,7 @@ import { QuoteService } from './quote.service';
 import { themeFromMapBox } from '../shell/shell.service';
 import * as L from 'leaflet';
 import { Options } from 'ng5-slider';
+import * as _ from 'lodash';
 
 import 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-icon-2x.png';
@@ -90,7 +91,7 @@ export class HomeComponent implements OnInit {
   constructor(private quoteService: QuoteService) {}
 
   ngOnInit() {
-    this.quoteService.temporalRange('2019-09-07T00:07:54Z', '2019-09-07T06:19:57Z').then((res: any) => {
+    this.quoteService.temporalRange('2019-09-13T14:15', '2019-09-16T14:15').then((res: any) => {
       this.opt = {
         floor: new Date('2019-09-07T00:07:54Z').getTime(),
         ceil: new Date('2019-09-07T06:19:57Z').getTime(),
@@ -101,24 +102,8 @@ export class HomeComponent implements OnInit {
 
       const length = this.data.length;
       console.log(length);
-      this.opt.floor = new Date(
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['year']['low'],
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['month']['low'] - 1,
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['day']['low'],
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['hour']['low'],
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['minute']['low'],
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['second']['low'],
-        this.data[0]['_fields'][0]['properties']['DATEANDTIME']['nanosecond']['low']
-      ).getTime();
-      this.opt.ceil = new Date(
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['year']['low'],
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['month']['low'] - 1,
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['day']['low'],
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['hour']['low'],
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['minute']['low'],
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['second']['low'],
-        this.data[length - 1]['_fields'][0]['properties']['DATEANDTIME']['nanosecond']['low']
-      ).getTime();
+      this.opt.floor = new Date(this.data[0]['_fields'][0]['properties']['TIMESTAMP']).getTime();
+      this.opt.ceil = new Date(this.data[length - 1]['_fields'][0]['properties']['TIMESTAMP']).getTime();
       this.value = this.opt.floor;
       this.maxValue = this.value + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
     });
@@ -138,9 +123,11 @@ export class HomeComponent implements OnInit {
   changeFloorOrCeil(type: string) {
     if (type === 'floor') {
       this.changeFloor = !this.changeFloor;
+      console.log(this.opt.floor);
     }
     if (type === 'ceil') {
       this.changeCeil = !this.changeCeil;
+      console.log(this.opt.ceil);
     }
   }
 
@@ -156,39 +143,49 @@ export class HomeComponent implements OnInit {
       html:
         '<div style="background-color: red; color: rgba(255, 0, 0, 0); height: 10px; width: 10px; border-radius: 100%;">sdfsf</div>',
     });
-    this.data.forEach((el) => {
-      if (new Date(el.time) > new Date(this.opt.floor)) {
-        i++;
-        setTimeout(() => {
-          const lat = el.lat;
-          const lon = el.lon;
-          const time = el.time;
 
-          // console.log(this.latlngsPolyline);
-          this.layers = [];
-          // this.map.setZoom(7);
-          this.map.panTo(new L.LatLng(lat, lon));
-          this.layers.push(
-            L.marker([lat, lon], {
-              icon: myIcon,
-              // icon: this.greenIcon
-            })
-            // .bindPopup(
-            //   `<div>CraftID: ` +
-            //     craftID +
-            //     `</div>` +
-            //     `<div>TimeStamp: ` +
-            //     TimeStamp +
-            //     `</div>` +
-            //     `<div>Speed: ` +
-            //     Speed +
-            //     `</div>`
-            // )
-          );
-          this.value = new Date(time).getTime();
-          this.maxValue = this.value + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
-        }, i * (this.refreshTime * 1000));
-      }
-    });
+    let path = '_fields[0].properties.TIMESTAMP';
+
+    let mpla = _(this.data)
+      .filter((object) => _.has(object, path))
+      .groupBy(path)
+      .value();
+
+    console.log(mpla);
+
+    // this.data.forEach((el) => {
+    //   if (new Date(el.time) > new Date(this.opt.floor)) {
+    //     i++;
+    //     setTimeout(() => {
+    //       const lat = el.lat;
+    //       const lon = el.lon;
+    //       const time = el.time;
+
+    //       // console.log(this.latlngsPolyline);
+    //       this.layers = [];
+    //       // this.map.setZoom(7);
+    //       this.map.panTo(new L.LatLng(lat, lon));
+    //       this.layers.push(
+    //         L.marker([lat, lon], {
+    //           icon: myIcon,
+    //           // icon: this.greenIcon
+    //         })
+    //         // .bindPopup(
+    //         //   `<div>CraftID: ` +
+    //         //     craftID +
+    //         //     `</div>` +
+    //         //     `<div>TimeStamp: ` +
+    //         //     TimeStamp +
+    //         //     `</div>` +
+    //         //     `<div>Speed: ` +
+    //         //     Speed +
+    //         //     `</div>`
+    //         // )
+    //       );
+    //       this.value = new Date(time).getTime();
+    //       this.maxValue = this.value + this.windowBetweenFloorAndCeil * 60 * 60 * 1000;
+    //     }, i * (this.refreshTime * 1000));
+    //   }
+    // });
   }
 }
