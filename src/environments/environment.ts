@@ -14,7 +14,7 @@ export const environment = {
   production: false,
   hmr: true,
   version: env.npm_package_version + '-dev',
-  serverUrl: 'http://localhost:3000',
+  serverUrl: 'http://localhost:8080',
   defaultLanguage: 'en-US',
   supportedLanguages: ['en-US'],
 };
