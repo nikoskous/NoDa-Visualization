@@ -21,4 +21,12 @@ export class QuoteService {
   temporalRange(from: string, to: string) {
     return this.httpClient.get('/movingobject/' + from + '/' + to).toPromise();
   }
+
+  javaTest() {
+    return this.httpClient.get('/hello', { responseType: 'text' }).toPromise();
+  }
+
+  javaTestJson() {
+    return this.httpClient.get('/testjson').toPromise();
+  }
 }

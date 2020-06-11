@@ -91,6 +91,14 @@ export class HomeComponent implements OnInit {
   constructor(private quoteService: QuoteService) {}
 
   ngOnInit() {
+    this.quoteService.javaTest().then((res: any) => {
+      console.log(JSON.stringify(res));
+    });
+
+    this.quoteService.javaTestJson().then((res: any) => {
+      console.log(res);
+    });
+
     this.quoteService.temporalRange('2019-09-13T14:15', '2019-09-16T14:15').then((res: any) => {
       this.opt = {
         floor: new Date('2019-09-07T00:07:54Z').getTime(),
