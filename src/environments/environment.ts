@@ -12,7 +12,7 @@ import { env } from './.env';
 
 export const environment = {
   production: false,
-  hmr: true,
+  hmr: false,
   version: env.npm_package_version + '-dev',
   serverUrl: 'http://localhost:8080',
   defaultLanguage: 'en-US',
