@@ -1,3 +1,4 @@
+<!-- Header with player -->
 <div class="row w-100 m-0" style="height: 185px; z-index: 100; overflow-x: hidden;">
   <div class="col-12 mt-3">
     <div class="row w-100 m-0 p-2" style="background-color: rgb(85, 85, 85); border-radius: 12px;">
@@ -18,12 +19,13 @@
         <div class="btn btn-light font12 mr-2 p-0 pl-2 pr-2" style="padding-top: 2px; padding-bottom: 2px;">
           <i class="fa fa-backward"></i>
         </div>
-        {{ value | date: 'dd/MM/yyyy HH:mm:ss' }} - {{ maxValue | date: 'dd/MM/yyyy HH:mm:ss' }}
+        {{ value | date: 'dd/MM/yyyy HH:mm:ss' }} -
+        {{ maxValue | date: 'dd/MM/yyyy HH:mm:ss' }}
         <div class="btn btn-light font12 ml-2 p-0 pl-2 pr-2" style="padding-top: 2px; padding-bottom: 2px;">
           <i class="fa fa-forward"></i>
         </div>
       </div>
-      <ng5-slider [(value)]="value" [options]="opt"></ng5-slider>
+      <ng5-slider [(value)]="value" [(highValue)]="maxValue" [(options)]="opt"> </ng5-slider>
       <div class="col-6 pl-0 text-white font12">
         <input
           *ngIf="changeFloor"
@@ -90,6 +92,7 @@
   </div>
 </div>
 
+<!-- Leaflet map for visualization -->
 <div
   style="height: calc(100vh - 185px);"
   leaflet
