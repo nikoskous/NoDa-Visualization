@@ -18,15 +18,11 @@ export interface RandomQuoteContext {
 export class QuoteService {
   constructor(private httpClient: HttpClient) {}
 
-  temporalRange(from: string, to: string) {
-    return this.httpClient.get('/movingobject/' + from + '/' + to).toPromise();
+  getConnectionMessage() {
+    return this.httpClient.get('/connection-message', { responseType: 'text' }).toPromise();
   }
 
-  javaTest() {
-    return this.httpClient.get('/hello', { responseType: 'text' }).toPromise();
-  }
-
-  javaTestJson() {
-    return this.httpClient.get('/testjson').toPromise();
+  getNodaSTData() {
+    return this.httpClient.get('/noda-st-timelapse', { responseType: 'text' }).toPromise();
   }
 }
